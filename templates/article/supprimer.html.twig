@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Supprimer l'article - {{ article.titre }}{% endblock %}
+
+{% block body %}
+    {% include 'lucky/navbar.html.twig' %}
+    
+    <div id="layoutSidenav">
+        {% include 'lucky/sidebar.html.twig' %}
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">Supprimer l'article</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item"><a href="{{ path('app_article') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ path('app_article_list') }}">Liste des articles</a></li>
+                        <li class="breadcrumb-item active">Supprimer l'article</li>
+                    </ol>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h2>Supprimer l'article "{{ article.titre }}"</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>Êtes-vous sûr de vouloir supprimer cet article ?</p>
+                            <p><strong>Titre :</strong> {{ article.titre }}</p>
+                            <p><strong>Texte :</strong> {{ article.texte }}</p>
+                            <p><strong>Date de publication :</strong> {{ article.date|date('d/m/Y') }}</p>
+
+                            <form action="{{ path('app_article_delete', {id: article.id}) }}" method="post">
+                                <button type="submit" class="btn btn-danger mt-3">Supprimer</button>
+                                <a href="{{ path('app_article_list') }}" class="btn btn-secondary mt-3">Annuler</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            {% include 'lucky/footer.html.twig' %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des articles{% endblock %}
+
+{% block body %}
+    {% include 'lucky/navbar.html.twig' %}
+    
+    <div id="layoutSidenav">
+        {% include 'lucky/sidebar.html.twig' %}
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">Liste des articles</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item"><a href="{{ path('app_article') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Liste des articles</li>
+                    </ol>
+
+                    <div class="row">
+                        {% for article in articles %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h5>{{ article.titre }}</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p><strong>ID :</strong> {{ article.id }}</p>
+                                        <p><strong>Date de publication :</strong> {{ article.date ? article.date|date('d/m/Y') : 'N/A' }}</p>
+                                        <p><strong>Publié :</strong> {{ article.publie ? 'Oui' : 'Non' }}</p>
+                                        <p><strong>Contenu :</strong></p>
+                                        <p>{{ article.texte }}</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+                                        <a href="{{ path('app_article_delete', {'id': article.id}) }}" class="btn btn-danger btn-sm" 
+                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">Supprimer</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </main>
+            {% include 'lucky/footer.html.twig' %}
+        </div>
+    </div>
+{% endblock %}

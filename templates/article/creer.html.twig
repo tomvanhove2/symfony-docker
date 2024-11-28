@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un article{% endblock %}
+
+{% block body %}
+    {% include 'lucky/navbar.html.twig' %}
+
+    <div id="layoutSidenav">
+        {% include 'lucky/sidebar.html.twig' %}
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">Créer un nouvel article</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item"><a href="{{ path('app_article') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Créer un nouvel article</li>
+                    </ol>
+
+                    <!-- Affichage des messages flash -->
+                    {% for type, messages in app.flashes %}
+                        {% if type == 'success' %}
+                            <div class="alert alert-success">
+                                {% for message in messages %}
+                                    <p>{{ message }}</p>
+                                {% endfor %}
+                            </div>
+                        {% elseif type == 'error' %}
+                            <div class="alert alert-danger">
+                                {% for message in messages %}
+                                    <p>{{ message }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            {{ form_start(form) }}
+                            {{ form_row(form.titre) }}
+                            {{ form_row(form.texte) }}
+                            {{ form_row(form.publie) }}
+                            <button class="btn btn-primary">Créer l'article</button>
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+            </main>
+            {% include 'lucky/footer.html.twig' %}
+        </div>
+    </div>
+{% endblock %}
