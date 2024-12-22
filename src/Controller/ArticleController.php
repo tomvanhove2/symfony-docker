@@ -25,29 +25,20 @@ class ArticleController extends AbstractController
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $article = new Article();
-        
-        // Crée le formulaire
         $form = $this->createForm(ArticleType::class, $article);
-    
-        // Gère la requête HTTP
+
         $form->handleRequest($request);
-    
-        // Si le formulaire est soumis et valide, on persiste les données
+
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($article);
             $entityManager->flush();
-    
-            // Ajouter un message flash de succès
+
             $this->addFlash('success', 'L\'article a été créé avec succès.');
-    
-            // Reste sur la même page (retourne au même formulaire)
-            return $this->render('article/creer.html.twig', [
-                'form' => $form->createView(),
-                'titre' => 'Créer un nouvel article',
-            ]);
+
+            // Redirige vers la liste des articles après la création
+            return $this->redirectToRoute('app_article_list');
         }
-    
-        // Affiche le formulaire s'il n'est pas soumis ou pas valide
+
         return $this->render('article/creer.html.twig', [
             'form' => $form->createView(),
             'titre' => 'Créer un nouvel article',
@@ -60,19 +51,19 @@ class ArticleController extends AbstractController
         $articles = $entityManager->getRepository(Article::class)->findAll();
 
         return $this->render('article/liste.html.twig', [
-            'controller_name' => 'ArticleController',
             'titre' => 'Liste des articles',
-            'articles' => $articles
+            'articles' => $articles,
         ]);
     }
 
-    #[Route('/article/modifier/{id}', name: 'app_article_edit')]
+    #[Route('/article/modifier/{id}', name: 'app_article_edit', requirements: ['id' => '\d+'])]
     public function edit(int $id, Request $request, EntityManagerInterface $entityManager): Response
     {
         $article = $entityManager->getRepository(Article::class)->find($id);
 
         if (!$article) {
-            throw $this->createNotFoundException('Article non trouvé');
+            $this->addFlash('error', 'Article non trouvé.');
+            return $this->redirectToRoute('app_article_list');
         }
 
         $form = $this->createForm(ArticleType::class, $article);
@@ -81,33 +72,32 @@ class ArticleController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            // Ajouter un message flash de succès après la modification
-            $this->addFlash('success', 'L\'article a été modifié avec succès!');
+            $this->addFlash('success', 'L\'article a été modifié avec succès.');
 
             return $this->redirectToRoute('app_article_list');
         }
 
         return $this->render('article/modifier.html.twig', [
             'form' => $form->createView(),
-            'article' => $article, // Transmettre l'article pour éviter l'erreur
+            'article' => $article,
             'titre' => 'Modifier l\'article',
         ]);
     }
 
-    #[Route('/article/supprimer/{id}', name: 'app_article_delete')]
+    #[Route('/article/supprimer/{id}', name: 'app_article_delete', requirements: ['id' => '\d+'])]
     public function delete(int $id, EntityManagerInterface $entityManager): Response
     {
         $article = $entityManager->getRepository(Article::class)->find($id);
 
         if (!$article) {
-            throw $this->createNotFoundException("L'article avec l'ID $id n'existe pas.");
+            $this->addFlash('error', 'Article non trouvé.');
+            return $this->redirectToRoute('app_article_list');
         }
 
         $entityManager->remove($article);
         $entityManager->flush();
 
-        // Ajouter un message flash de succès après la suppression
-        $this->addFlash('success', 'L\'article a été supprimé avec succès!');
+        $this->addFlash('success', 'L\'article a été supprimé avec succès.');
 
         return $this->redirectToRoute('app_article_list');
     }
